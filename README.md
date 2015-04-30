@@ -36,3 +36,15 @@ Then sdata service needs to be logged in before calling the actual methods.  The
 
     <div dd-draggable="item"></div>
     <div dd-dropzone allow-drop="allowDrop(item)" on-drop="onDrop(item)"></div>
+    
+### blocks.logger
+
+This block comes from John Papa (http://www.johnpapa.net/).  It is a wrapper for the standard $log service that also sends the messages via a toaster.
+
+### blocks.exception
+
+This block comes from John Papa (http://www.johnpapa.net/).  It extends the built-in $exceptionHandler service to also show errors via a toaster.  Depends on the blocks.logger block.
+
+### blocks.router
+
+This block comes from John Papa (http://www.johnpapa.net/).  Helper for configuring Angular's ui-router: adds an error handling function and a function to update $rootScope.title based on the specified configuration.
