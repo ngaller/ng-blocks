@@ -8,6 +8,12 @@ Refer to the module.js file or to the individual README files.
 Install a block by copying its folder under your application's source code.  Then, require the block in your module declaration, for example:
 
     angular.module('app', ['blocks.sdata']);
+    
+You can also include the whole blocks repository as a submodule in your project:
+    
+    git submodule add https://github.com/ngaller/ng-blocks.git blocks
+    
+See http://git-scm.com/book/en/v2/Git-Tools-Submodules for more information.
 
 ## Available blocks
 
