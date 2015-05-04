@@ -2,9 +2,9 @@
     'use strict';
 
     angular.module('blocks.sdata')
-        .factory('authenticationService', authenticationService);
+        .factory('sdataAuthenticationService', sdataAuthenticationService);
 
-    function authenticationService($q, sdataService) {
+    function sdataAuthenticationService($q, sdataService) {
         var service = {
             isAuthenticated: isAuthenticated,
             clearAuthentication: clearAuthentication,

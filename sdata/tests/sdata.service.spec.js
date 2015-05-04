@@ -1,11 +1,9 @@
 /* jshint -W117, -W030 */
 describe('blocks.sdata', function () {
     // test sdata service against a live sdata server
-    // TODO: create tests against mock data
     describe('sdataService - LIVE calls', function () {
         beforeEach(function () {
             bard.asyncModule('blocks.sdata', function (sdataServiceProvider) {
-                // TODO: mock http calls?
                 sdataServiceProvider.configure({sdataUri: 'http://vmng-slx81.sssworld-local.com:3012/sdata/'});
             });
 
@@ -29,7 +27,7 @@ describe('blocks.sdata', function () {
             return sdataService.create('accounts', {
                 AccountName: 'Foo'
             }).then(function(account) {
-                return sdataService.delete('accounts', account.$key);
+                return sdataService.del('accounts', account.$key);
             });
         });
 
@@ -37,7 +35,7 @@ describe('blocks.sdata', function () {
             return sdataService.create('accounts', {
                 AccountName: 'Foo'
             }).then(function(account) {
-                return sdataService.delete('accounts', account.$key).then(function() {
+                return sdataService.del('accounts', account.$key).then(function() {
                     return sdataService.read('accounts', 'Id eq \'' + account.$key + '\'').then(function(data) {
                         expect(data.$resources).to.be.empty;
                     });
@@ -54,7 +52,7 @@ describe('blocks.sdata', function () {
                     AccountName: 'Fool'
                 }).then(function(updatedAccount) {
                     expect(updatedAccount.AccountName).to.equal('Fool');
-                    return sdataService.delete('accounts', account.$key);
+                    return sdataService.del('accounts', account.$key);
                 });
             });
         });
@@ -62,5 +60,13 @@ describe('blocks.sdata', function () {
         it('should call sdata business rule', function () {
             return sdataService.callBusinessRule('barrelOrderDetails', 'PrepareOSGProductionSchedule', 'QURIQA4RXAB7');
         });
+
+        it('should return configured sdata URI', function() {
+            expect(sdataService.getSdataUri()).to.be.ok;
+        })
+    });
+
+    describe('sdataService - Mock calls', function() {
+        // TODO: create tests against mock data
     })
 })

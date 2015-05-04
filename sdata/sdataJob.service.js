@@ -13,13 +13,25 @@
         /**
          * Trigger a job to be executed immediately.
          *
-         * @param jobId {string}  Job definition id, e.g. 'Saleslogix.Reporting.Jobs.CrystalReportsJob'
-         * @param params {object}
+         * @param {string} jobId   Job definition id, e.g. 'Saleslogix.Reporting.Jobs.CrystalReportsJob'
+         * @param {object} [params]   Object defining all parameters
          * @promise {string} trigger Id
          */
         this.triggerJob = function triggerJob(jobId, params) {
-            var payload = {};
-            var url = schedulingUrl + '/jobs(\'' + jobId + '\')/$service/trigger?format=json';
+            var payload = {
+                request: { parameters: [] }
+            };
+            if(params){
+                for(var k in params){
+                    if(params.hasOwnProperty(k)){
+                        payload.request.parameters.push({
+                            Name: k,
+                            Value: params[k]
+                        });
+                    }
+                }
+            }
+            var url = schedulingUrl + 'jobs(\'' + encodeURIComponent(jobId) + '\')/$service/trigger?format=json';
             return sdataService.executeRequest(url, 'POST', payload).then(function(data) {
                 return data.response['triggerId'];
             });
@@ -32,7 +44,8 @@
          * @promise {object} execution status, or null if not found
          */
         this.getExecutionStatus = function getExecutionStatus(triggerId) {
-
+            var url = schedulingUrl + 'executions(triggerId eq \'' + encodeURIComponent(triggerId) + '\')?format=json';
+            return sdataService.executeRequest(url, 'GET');
         }
     }
 })();

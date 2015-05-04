@@ -25,7 +25,7 @@ Simple sdata client service.  Sdata service provider needs to be configured firs
         sdataServiceProvider.configure({sdataUri: 'http://localhost/sdata/slx/dynamic/-/'});
     });
     
-Then sdata service needs to be logged in before calling the actual methods.  The bundled authenticationService may be used to get a better error reporting, or the sdataService 'setAuthenticationParameters' may be called directly, or the username and password may be passed at the same time the sdataUri is:
+Then sdata service needs to be logged in before calling the actual methods.  The bundled sdataAuthenticationService may be used to get a better error reporting, or the sdataService 'setAuthenticationParameters' may be called directly, or the username and password may be passed at the same time the sdataUri is:
 
     sdataServiceProvider.configure({sdataUri: ..., username: 'admin', password: ''});
 
