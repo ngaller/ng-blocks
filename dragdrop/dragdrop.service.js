@@ -16,11 +16,11 @@
 
         //////// Implementation
 
-        function setDraggedItem(data){
+        function setDraggedItem(data) {
             _draggedItem = data;
         }
 
-        function getDraggedItem(){
+        function getDraggedItem() {
             return _draggedItem;
         }
     }

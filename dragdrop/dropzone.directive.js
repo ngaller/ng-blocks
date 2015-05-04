@@ -17,12 +17,12 @@
                 // eg: on-drop="onDrop(item)"
                 onDrop: '&'
             },
-            link: function(scope, element) {
+            link: function (scope, element) {
 
                 var dragCounter = 0;
 
                 function allowDrop() {
-                    if(scope.allowDrop){
+                    if (scope.allowDrop) {
                         return scope.allowDrop({item: dragdropService.getDraggedItem()});
                     }
                     return true;
@@ -30,7 +30,7 @@
 
                 element.on('dragover', function (e) {
                     var dt = e.originalEvent.dataTransfer;
-                    if (!allowDrop()){
+                    if (!allowDrop()) {
                         return;
                     }
                     e.preventDefault();

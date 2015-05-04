@@ -1,10 +1,10 @@
-(function() {
+(function () {
     'use strict';
 
     angular.module('blocks.sdata')
         .factory('authenticationService', authenticationService);
 
-    function authenticationService ($q, sdataService) {
+    function authenticationService($q, sdataService) {
         var service = {
             isAuthenticated: isAuthenticated,
             clearAuthentication: clearAuthentication,
@@ -18,9 +18,9 @@
         function login(username, password) {
             sdataService.setAuthenticationParameters(username, password);
             return sdataService.read('accounts', '', {count: 0})
-                .then(function() {
+                .then(function () {
                     _isAuthenticated = true;
-                }, function() {
+                }, function () {
                     _isAuthenticated = false;
                     return $q.reject('Login failed');
                 });

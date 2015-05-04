@@ -12,14 +12,14 @@
                 // identify item that represents the data being dragged
                 draggedItem: '=ddDraggable'
             },
-            link: function(scope, element) {
+            link: function (scope, element) {
                 element.attr('draggable', 'true');
-                element.on('dragstart', function(e) {
+                element.on('dragstart', function (e) {
                     var dt = e.originalEvent.dataTransfer;
                     dt.effectAllowed = 'move';
                     dragdropService.setDraggedItem(scope.draggedItem);
                     this.classList.add('drag');
-                }).on('dragend', function(e) {
+                }).on('dragend', function (e) {
                     dragdropService.setDraggedItem(null);
                     this.classList.remove('drag');
                 });
