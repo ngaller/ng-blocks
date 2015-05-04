@@ -9,6 +9,7 @@
         var sdataUri, username, password;
 
         this.configure = function (config) {
+            // root URI for sdata services: e.g. http://vmng-slx81.sssworld-local.com:3012/sdata/
             sdataUri = config.sdataUri;
             username = config.username;
             password = config.password;
@@ -17,8 +18,13 @@
         this.$get = ['$http', '$q', function ($http, $q) {
             if (!sdataUri)
                 throw new Error('sdataUri must be configured prior to accessing sdata service');
+            if(!/\/$/.test(sdataUri))
+                sdataUri += '/';
+            if(/slx\/dynamic\/-/.test(sdataUri))
+                throw new Error('sdataUri should be to root of sdata site (i.e. /sdata/, not /sdata/slx/dynamic/-/)');
+
             var service = sdataServiceFactory($http, $q, sdataUri);
-            if(username){
+            if (username) {
                 service.setAuthenticationParameters(username, password);
             }
             return service;
@@ -41,7 +47,7 @@
                 //  Retrieve SData resources matching the specified criteria
                 //
 
-                var url = sdataUri + resourceKind + '?format=json';
+                var url = 'slx/dynamic/-/' + resourceKind + '?format=json';
                 if (where) {
                     // this must be encoded explicitly because Angular will encode a space to a + (conforming to RFC)
                     // which sdata cannot parse
@@ -54,34 +60,36 @@
                     }
                 }
 
-                return $http.get(url, getRequestConfig()).then(function (response) {
-                    return response.data;
-                }, handleSdataError);
+                return this.executeRequest(url);
+                //url = sdataUri + url;
+                //var req = getRequestConfig();
+                //return $http.get(url, req).then(function(response) {
+                //    console.log('GET returned', response);
+                //    return response.data;
+                //}, function(err) {
+                //    console.warn('ERROR occured', err);
+                //});
             },
 
             create: function (resourceKind, data) {
                 // summary:
                 //  Create resource
-                var url = sdataUri + resourceKind + '?format=json';
-                return $http.post(url, data, getRequestConfig()).then(function (response) {
-                    return response.data;
-                }, handleSdataError)
+                var url = 'slx/dynamic/-/' + resourceKind + '?format=json';
+                return this.executeRequest(url, 'POST', data);
             },
 
             update: function (resourceKind, data) {
                 // summary:
                 //  Update designated resource.  The id ($key) must be provided as part of the data.
-                var url = sdataUri + resourceKind + '("' + data.$key + '")?format=json';
-                return $http.put(url, data, getRequestConfig()).then(function (response) {
-                    return response.data;
-                }, handleSdataError)
+                var url = 'slx/dynamic/-/' + resourceKind + '("' + data.$key + '")?format=json';
+                return this.executeRequest(url, 'PUT', data);
             },
 
-            destroy: function (resourceKind, key) {
+            'delete': function (resourceKind, key) {
                 // summary:
                 //  delete designated resource.
-                var url = sdataUri + resourceKind + '("' + key + '")?format=json';
-                return $http.delete(url, getRequestConfig()).catch(handleSdataError);
+                var url = 'slx/dynamic/-/' + resourceKind + '("' + key + '")?format=json';
+                return this.executeRequest(url, 'DELETE');
             },
 
             callBusinessRule: function (resourceKind, operationName, recordId, parameters) {
@@ -94,21 +102,39 @@
                 if (parameters) {
                     angular.extend(payload.request, parameters);
                 }
-                var url = sdataUri + resourceKind + '/$service/' + operationName + '?format=json';
-                return $http.post(url, payload, getRequestConfig()).then(function (response) {
-                    console.log(response);
-                    if (response.data.response && response.data.response.hasOwnProperty('Result'))
-                        return response.data.response.Result;
+                var url = 'slx/dynamic/-/' + resourceKind + '/$service/' + operationName + '?format=json';
+                return this.executeRequest(url, 'POST', payload).then(function (response) {
+                    if (response.response && response.response.hasOwnProperty('Result'))
+                        return response.response.Result;
                     return undefined;
-                }, handleSdataError)
+                });
             },
 
+            /**
+             * Generic execute request method.  Used internally and by sub services.
+             *
+             * @param {string} url    Fragment of url to be added to the root sdata URI
+             * @param {string} [method=GET]  HTTP Method to use
+             * @param {object} [payload]   Data to be sent with the request
+             */
+            executeRequest: function executeRequest(url, method, payload) {
+                var req = getRequestConfig({
+                    url: sdataUri + url,
+                    method: method || 'GET',
+                    data: payload
+                });
+                return $http(req).then(function(response) {
+                    return response.data;
+                }, handleSdataError);
+            },
+
+            // TODO: this should be moved somewhere else... does not belong on the sdata service?
             expandQueryFilter: function (filter) {
                 return Object.keys(filter).map(function (key) {
                     var f = filter[key];
                     if (f && f.value) {
-                        switch (f.type) {
-                            case 'text':
+                        switch(f.type){
+                            default:
                                 return key + ' like \'%' + f.value.replace(/'/g, '\\\'') + '%\'';
                         }
                     }
