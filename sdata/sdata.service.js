@@ -109,7 +109,7 @@
          *
          * @param resourceKind
          * @param key
-         * @promise  {*}  Will resolve when delete is complete, but no value is returned
+         * @promises  {*}  Will resolve when delete is complete, but no value is returned
          */
         this['delete'] = this.del = function del(resourceKind, key) {
             // summary:
@@ -132,7 +132,7 @@
          * @param {string} recordId
          * @param {object} [parameters]  Any additional parameters to be added to the request - names must match the
          * ones declared in AA
-         * @returns {*} Business rule's response, or undefined if no response is returned
+         * @promises {*} Business rule's response, or undefined if no response is returned
          */
         this.callBusinessRule = function callBusinessRule(resourceKind, operationName, recordId, parameters) {
             var payload = {

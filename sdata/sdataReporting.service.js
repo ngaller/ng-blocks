@@ -15,7 +15,7 @@
          * @param {string} reportId  Report id in Family:Name format
          * @param {string} selectionFormula
          * @param {string} [outputType=Pdf]
-         * @promise {string} report URL
+         * @promises {string} report URL
          * @fail {string}  if the report generation fails, the promise will be rejected with the associated error message
          */
         this.generateReportAndWait = function generateReportAndWait(reportId, selectionFormula, outputType) {

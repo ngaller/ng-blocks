@@ -1,6 +1,6 @@
 /* jshint -W117, -W030 */
 describe('blocks.sdata', function() {
-    describe.only('sdataReportingService', function () {
+    describe('sdataReportingService', function () {
 
         beforeEach(function() {
             bard.appModule('blocks.sdata');
