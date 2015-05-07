@@ -97,6 +97,13 @@
             return this.executeRequest(url, 'POST', data);
         }
 
+        /**
+         * Update a single resource
+         *
+         * @param {string} resourceKind
+         * @param {object} data
+         * @returns {*}
+         */
         this.update = function update(resourceKind, data) {
             // summary:
             //  Update designated resource.  The id ($key) must be provided as part of the data.
@@ -107,8 +114,8 @@
         /**
          * Delete a resource (we use del instead of delete to make javascript linter happy)
          *
-         * @param resourceKind
-         * @param key
+         * @param {string} resourceKind
+         * @param {string} key
          * @promises  {*}  Will resolve when delete is complete, but no value is returned
          */
         this['delete'] = this.del = function del(resourceKind, key) {
@@ -152,7 +159,6 @@
             });
         }
 
-
         /**
          * Generic execute request method.  Used internally and by sub services.
          *
@@ -169,22 +175,6 @@
             return $http(req).then(function (response) {
                 return response.data;
             }, _handleSdataError);
-        }
-
-        // TODO: this should be moved somewhere else... does not belong on the sdata service?
-        this.expandQueryFilter = function expandQueryFilter(filter) {
-            return Object.keys(filter).map(function (key) {
-                var f = filter[key];
-                if (f && f.value) {
-                    switch (f.type) {
-                        default:
-                            return key + ' like \'%' + f.value.replace(/'/g, '\\\'') + '%\'';
-                    }
-                }
-                return null;
-            }).filter(function (f) {
-                return !!f;
-            });
         }
 
         ///////////////
@@ -209,5 +199,4 @@
             return $q.reject(error.statusText || error);
         }
     }
-
 })();

@@ -6,11 +6,13 @@
         .service('sdataReportingService', SdataReportingService);
 
     // service declaration
-    function SdataReportingService($q, sdataService, sdataJobService) {
+    function SdataReportingService($q, $interval, sdataService, sdataJobService) {
         var CR_JOB_ID = 'Saleslogix.Reporting.Jobs.CrystalReportsJob';
 
         /**
          * Generate a report on the job service and return the report URL once it finishes exporting.
+         * This will queue the report on the sdata job service then check the execution status on a regular basis
+         * using $interval.
          *
          * @param {string} reportId  Report id in Family:Name format
          * @param {string} selectionFormula
@@ -31,10 +33,10 @@
                 OutputFormat: outputType || 'Pdf'
             }).then(function (triggerId) {
                 return $q(function (resolve, reject) {
-                    var i = setInterval(function () {
+                    var i = $interval(function () {
                         sdataJobService.getExecutionStatus(triggerId).then(function (status) {
                             if (status.status == 'Complete') {
-                                clearInterval(i);
+                                $interval.cancel(i);
                                 var result = status.result;
                                 // this will return the attachment in the form of a URL: SlxAttachment://attachid
                                 if (/^SlxAttachment:/.test(result)) {
@@ -45,6 +47,7 @@
                                     reject('Unexpected response from report job: ' + result);
                                 }
                             } else if (status.status != 'Running') {
+                                $interval.cancel(i);
                                 reject('Report execution encountered an error');
                             }
                         }, reject);
