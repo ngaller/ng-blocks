@@ -12,22 +12,23 @@ describe('blocks.sdata', function () {
         it('should post trigger to sdata service', function () {
             bard.mockService(sdataService, {
                 executeRequest: $q.when({
-                    response: {
-                        triggerId: '1234'
-                    }
+                    $key: '1234'
                 })
             });
-            return sdataJobService.triggerJob('Some Job', {param1: 'value1'}).then(function (triggerId) {
-                expect(triggerId).to.equal('1234');
-                expect(sdataService.executeRequest)
-                    .to.be.calledWithMatch(/^\/\$app\/scheduling\/-\/jobs\('Some%20Job'\)/, 'POST',
-                    function (reqData) {
-                        expect(reqData).to.have.deep.property('request.parameters[0].Name').that.equals('param1');
-                        expect(reqData).to.have.deep.property('request.parameters[0].Value').that.equals('value1');
-                        return true;
-                    })
-                    .once;
-            })
+            return sdataJobService.triggerJob('Some Job', 'Description', {param1: 'value1'})
+                .then(function (triggerId) {
+                    expect(triggerId).to.equal('1234');
+                    expect(sdataService.executeRequest)
+                        .to.be.calledWithMatch(/^\/\$app\/scheduling\/-\/triggers/, 'POST',
+                        {
+                            $descriptor: 'Description',
+                            job: { $key: 'Some Job' },
+                            parameters: [
+                                {Name: 'param1', Value: 'value1'}
+                            ]
+                        })
+                        .once;
+                })
         });
 
         it('should query job service for execution status', function () {

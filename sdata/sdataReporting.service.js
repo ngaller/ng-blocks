@@ -26,10 +26,14 @@
             if (nameParts.length != 2)
                 return $q.reject('Invalid report id');
 
-            return sdataJobService.triggerJob(CR_JOB_ID, {
+            return sdataJobService.triggerJob(CR_JOB_ID, nameParts[1], {
                 PluginFamily: nameParts[0],
                 PluginName: nameParts[1],
+                ScheduleName: nameParts[1],
+                ConditionsConnector: 'And',
                 RecordSelectionFormula: selectionFormula,
+                ReportParameters: [],
+                ReportConditions: [],
                 OutputFormat: outputType || 'Pdf'
             }).then(function (triggerId) {
                 return $q(function (resolve, reject) {

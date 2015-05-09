@@ -184,7 +184,13 @@
                 withCredentials: false,
                 headers: {
                     'Authorization': 'Basic ' + window.btoa(_username + ':' + _password),
-                    'Cache-Control': 'no-cache'
+                    'Cache-Control': 'no-cache',
+                    // the next 3 headers are there to prevent the 401 challenge from being sent to the browser
+                    // we want to make sure that our custom error handlers get any authentication failure, not the
+                    // browser!
+                    'X-Authorization': 'Basic ' + window.btoa(_username + ':' + _password),
+                    'X-Authorization-Mode': 'no-challenge',
+                    'X-Application-Name': 'ng-blocks/sdata'
                 }
             };
             if (addlConfig)

@@ -19,6 +19,12 @@ describe('blocks.sdata', function () {
             });
             sdataReportingService.generateReportAndWait('TICKET:Ticket Details',
                 '{TICKET.TICKETID} = "XXXXX"', 'Pdf').then(function (reportUrl) {
+                    expect(sdataJobService.triggerJob).to.be.calledWithMatch(/CrystalReport/, 'Ticket Details', {
+                        OutputFormat: 'Pdf',
+                        PluginName: 'Ticket Details',
+                        PluginFamily: 'TICKET',
+                        RecordSelectionFormula: '{TICKET.TICKETID} = "XXXXX"'
+                    });
                     expect(reportUrl).to.equal('fake server/slx/system/-/attachments(\'FAKEATTACHID\')/file');
                     done();
                 });

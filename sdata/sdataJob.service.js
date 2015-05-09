@@ -14,26 +14,31 @@
          * Trigger a job to be executed immediately.
          *
          * @param {string} jobId   Job definition id, e.g. 'Saleslogix.Reporting.Jobs.CrystalReportsJob'
+         * @param {string} [descriptor]  Job descriptor, will default to job id
          * @param {object} [params]   Object defining all parameters
          * @promises {string} trigger Id
          */
-        this.triggerJob = function triggerJob(jobId, params) {
+        this.triggerJob = function triggerJob(jobId, descriptor, params) {
             var payload = {
-                request: {parameters: []}
+                $descriptor: descriptor || jobId,
+                job: {
+                    $key: jobId
+                },
+                parameters: []
             };
             if (params) {
                 for (var k in params) {
                     if (params.hasOwnProperty(k)) {
-                        payload.request.parameters.push({
+                        payload.parameters.push({
                             Name: k,
                             Value: params[k]
                         });
                     }
                 }
             }
-            var url = schedulingUrl + 'jobs(\'' + encodeURIComponent(jobId) + '\')/$service/trigger?format=json';
+            var url = schedulingUrl + 'triggers?format=json';
             return sdataService.executeRequest(url, 'POST', payload).then(function (data) {
-                return data.response['triggerId'];
+                return data.$key;
             });
         }
 
