@@ -190,7 +190,7 @@
                     // browser!
                     'X-Authorization': 'Basic ' + window.btoa(_username + ':' + _password),
                     'X-Authorization-Mode': 'no-challenge',
-                    'X-Application-Name': 'ng-blocks/sdata'
+                    'X-Application-Name': 'ng-blocks.sdata'
                 }
             };
             if (addlConfig)

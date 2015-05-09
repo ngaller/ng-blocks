@@ -17,7 +17,7 @@
 
         function login(username, password) {
             sdataService.setAuthenticationParameters(username, password);
-            return sdataService.executeRequest('/slx/system/-/$service/getCurrentUser?format=json', 'POST')
+            return sdataService.executeRequest('/slx/system/-/$service/getCurrentUser?format=json', 'POST', {})
                 .then(function () {
                     _isAuthenticated = true;
                 }, function () {
