@@ -13,7 +13,7 @@ describe('blocks.sdata', function () {
 
         it('should login to sdata', function () {
             bard.mockService(sdataService, {
-                read: $q.when([])
+                executeRequest: $q.when([])
             });
             return sdataAuthenticationService.login('admin', '').then(function () {
                 expect(sdataAuthenticationService.isAuthenticated()).to.be.true;
@@ -22,7 +22,7 @@ describe('blocks.sdata', function () {
 
         it('should reject login error with "login failed"', function () {
             bard.mockService(sdataService, {
-                read: $q.reject('Foo')
+                executeRequest: $q.reject('Foo')
             });
             return sdataAuthenticationService.login('admin', '').then(function () {
                 assert.fail(0, 0, 'The login call should not succeed');
@@ -34,7 +34,7 @@ describe('blocks.sdata', function () {
 
         it('should logout when logout is called', function () {
             bard.mockService(sdataService, {
-                read: $q.when([])
+                executeRequest: $q.when([])
             });
             return sdataAuthenticationService.login('admin', '').then(function () {
                 sdataAuthenticationService.clearAuthentication();
