@@ -184,7 +184,9 @@
                 withCredentials: false,
                 headers: {
                     'Authorization': 'Basic ' + window.btoa(_username + ':' + _password),
-                    'Cache-Control': 'no-cache',
+                    // Cache-Control needs to be set on the server side, not the client!
+                    // If you have cache problem set that header on the sdata vdir
+                    //'Cache-Control': 'no-cache',
                     // the next 2 headers are there to prevent the 401 challenge from being sent to the browser
                     // we want to make sure that our custom error handlers get any authentication failure, not the
                     // browser!
