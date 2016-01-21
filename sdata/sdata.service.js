@@ -6,13 +6,14 @@
 
     // provider is used to be able to configure the sdata URI prior to constructing the service
     function SdataServiceProvider() {
-        var sdataUri, username, password;
+        var sdataUri, username, password, preventCaching;
 
         this.configure = function (config) {
             // root URI for sdata services: e.g. http://vmng-slx81.sssworld-local.com:3012/sdata/
             sdataUri = config.sdataUri;
             username = config.username;
             password = config.password;
+            preventCaching = config.preventCaching;
         }
 
         this.$get = ['$http', '$q', function ($http, $q) {
@@ -23,7 +24,7 @@
             if (/slx\/dynamic\/-/.test(sdataUri))
                 throw new Error('sdataUri should be to root of sdata site (i.e. /sdata/, not /sdata/slx/dynamic/-/)');
 
-            var service = new SdataService($http, $q, sdataUri);
+            var service = new SdataService($http, $q, sdataUri, preventCaching);
             if (username) {
                 service.setAuthenticationParameters(username, password);
             }
@@ -31,7 +32,7 @@
         }];
     }
 
-    function SdataService($http, $q, sdataUri) {
+    function SdataService($http, $q, sdataUri, preventCaching) {
 
         var _username, _password;
 
@@ -172,6 +173,10 @@
                 method: method || 'GET',
                 data: payload
             });
+            // prevent caching?
+            if (preventCaching && req.method == 'GET') {
+                req.url += '&rnd=' + Math.random();
+            }
             return $http(req).then(function (response) {
                 return response.data;
             }, _handleSdataError);
