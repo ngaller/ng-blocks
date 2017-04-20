@@ -1,6 +1,6 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular.module('blocks.sdata', []);
+  angular.module('blocks.sdata', []);
 
 })();

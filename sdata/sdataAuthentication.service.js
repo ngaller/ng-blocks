@@ -25,8 +25,6 @@
       return sdataService.executeRequest('/slx/system/-/$service/getCurrentUser?format=json', 'POST', {})
         .then(function (data) {
           _isAuthenticated = true;
-          console.log('GOT DATA', data);
-          debugger
           // this returns the data in a response property
           cacheUserRoles(data.response);
           _userId = data.response.userId.trim();
@@ -56,14 +54,14 @@
     function cacheUserRoles(userData) {
       var r = userData.roles;
       _roles = {};
-      if(r) {
+      if (r) {
         for (var i = 0; i < r.length; i++) {
           _roles[r[i]] = true;
         }
       }
       var sa = userData.securedActions;
       _securedActions = {};
-      if(sa) {
+      if (sa) {
         for (var j = 0; j < sa.length; j++) {
           _securedActions[sa[j]] = true;
         }

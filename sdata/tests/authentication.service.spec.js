@@ -52,7 +52,7 @@ describe('blocks.sdata', function () {
       });
     });
 
-    it('should capture user roles when logging in', function() {
+    it('should capture user roles when logging in', function () {
       bard.mockService(sdataService, {
         executeRequest: $q.when({
           response: {
@@ -66,7 +66,7 @@ describe('blocks.sdata', function () {
       });
     })
 
-    it('should capture secured actions when logging in', function() {
+    it('should capture secured actions when logging in', function () {
       bard.mockService(sdataService, {
         executeRequest: $q.when({
           response: {
